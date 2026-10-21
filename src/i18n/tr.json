@@ -21,7 +21,16 @@
   },
   "home": {
     "title": "HızlıQuiz",
-    "subtitle": "5 kategori, 10 soru, soru başına 5 saniye. Hazır mısın?"
+    "subtitle": "5 kategori, 10 soru, soru başına 5 saniye. Hazır mısın?",
+    "rules": [
+      "Her turda 10 soru var, 4 şıktan birini seç.",
+      "Her soru için 5 saniyen var — ne kadar hızlı cevaplarsan o kadar çok puan kazanırsın.",
+      "Doğru cevap +10 puan (+4'e kadar hız bonusu), yanlış veya süre dolması −5 puan.",
+      "Tur bitince adını yaz, liderlik tablosuna gir!"
+    ],
+    "chooseCategory": "Bir kategori seç",
+    "loadingCategories": "Kategoriler yükleniyor...",
+    "categoriesError": "Kategoriler yüklenemedi."
   },
   "play": {
     "title": "Oyun"
