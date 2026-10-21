@@ -33,7 +33,7 @@ const isWarning = computed(() => props.remainingMs <= 2000)
     </svg>
     <span
       class="absolute inset-0 flex items-center justify-center font-display text-2xl font-bold"
-      :class="isWarning ? 'text-warning' : 'text-text'"
+      :class="isWarning ? 'text-warning-ink' : 'text-text'"
     >
       {{ seconds }}
     </span>

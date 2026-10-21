@@ -3,8 +3,17 @@
 Bu dosya her fazdan sonra güncellenir. Yeni bir oturum başlarken önce bu dosyayı oku.
 
 ## Durum
-- Son tamamlanan faz: **F5 — Liderlik tablosu** (2026-10-21)
-- Sıradaki faz: **F6 — Erişilebilirlik, 360px, meta/favicon, Playwright E2E, README**
+- Son tamamlanan faz: **F6 — Erişilebilirlik, 360px, meta/favicon, Playwright E2E, README** (2026-10-22)
+- Sıradaki faz: **(yok — frontend F1-F6 tamamlandı)**
+- F6'da yapılanlar:
+  - **WCAG AA renk düzeltmesi (önemli bulgu)**: spec'teki `--color-primary/success/danger/warning` değerlerinin hiçbiri beyaz üzerinde METİN olarak AA'yı (4.5:1) karşılamıyor (gerçek kontrast oranları hesaplandı: primary 2.77, success 2.01, danger 2.01, warning 1.64 — hepsi 3:1'in bile altında). Token değerleri spec'in kendisi olduğu için DEĞİŞTİRİLMEDİ; bunun yerine aynı ton, koyulaştırılmış `--color-*-ink` varyantları eklendi (`src/assets/main.css`, 4.5:1'e göre hesaplanmış: primary→#4D807A, success→#3A845E, danger→#DE3535, warning→#A7690F) ve tüm okunur metin/beyaz-yazılı-buton kullanımları bunlara geçirildi (başlıklar, skor sayıları, hata mesajları, submit/retry butonları, sekme aktif durumu, liderlik vurgu halkası). Orijinal token'lar yalnızca dekoratif/non-text kullanımlarda kaldı (CountdownRing'in ring çizgisi, ProgressDots dolgusu, ChoiceButton'ın seçili tint'i, kategori kartı focus outline'ı).
+  - `prefers-reduced-motion`: kalan `transition` kullanan tüm bileşenlere (`ChoiceButton`, `CategoryCard`, butonlar, sekmeler) `motion-reduce:transition-none` eklendi.
+  - `PlayView`'a eksik olan görünmez `<h1>` (`sr-only`) eklendi — ekran okuyucu kullanıcıları için sayfa başlığı artık her view'da var.
+  - `public/favicon.svg` + `index.html`'e `theme-color`, `description`, Open Graph meta etiketleri eklendi.
+  - **360px-640px responsive doğrulaması**: tarayıcıda 360px ve 640px genişliklerde tüm sayfalar kontrol edildi, taşma yok. PlayView'da şıkların gerçekten "ekranın alt yarısında" olduğu (`mt-auto` ile) DOM ölçümüyle kanıtlandı (`choicesRect.top=440/740px`) — uzun emüle viewport'ların panel ekranına sığdırılırken kırpılması nedeniyle ekran görüntüleri yanıltıcıydı, bu yüzden atomic `browser_batch` içinde JS ölçümü kullanıldı; gelecekte benzer uzun-sayfa doğrulamalarında ekran görüntüsü yerine `getBoundingClientRect()` tercih edilmeli.
+  - **Playwright E2E** (`playwright.config.ts`, `e2e/golden-path.spec.ts`): tüm backend çağrıları `page.route()` ile mock'landı (gerçek backend gerektirmez) — kategori seç → oyna (2 mock soru) → bitir → isim gönder → liderlik tablosunda vurgulanmış satırı gör, uçtan uca tek testte. `npx playwright install chromium` ile tarayıcı kuruldu, test 7 saniyede geçti. `npm run e2e` script'i eklendi.
+  - README'ye özellik listesi, `e2e` komutu, mimari genişletmesi (`quiz.ts`, `useCountdown.ts`, router guard'ı) ve WCAG AA renk notu eklendi.
+  - 54/54 Vitest testi + 1/1 Playwright E2E testi geçti, build/typecheck temiz.
 - F5'te yapılanlar:
   - `src/api/leaderboard.ts`: `fetchLeaderboard(slug, period)`.
   - `LeaderboardView.vue`: kategori adını göstermek için `fetchCategories()`'i tekrar kullanıp slug'a göre eşleştiriyor (ekstra model yerine mevcut endpoint'i yeniden kullanmak daha az karmaşık); `period` sekmeleri (`role="tablist"`/`role="tab"`/`aria-selected`), `?highlight=<rank>` query param'ı `route.query`'den okunup eşleşen satıra `ring-2 ring-primary` uygulanıyor, ilk 3 sıraya 🥇🥈🥉 madalyası (`MEDALS` map, 4.+ sıra düz numara), yükleniyor/hata (tekrar dene)/boş liste durumları.

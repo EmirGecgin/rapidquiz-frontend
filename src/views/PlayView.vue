@@ -103,16 +103,22 @@ const feedbackAnnouncement = computed(() => {
 
 <template>
   <main class="mx-auto flex min-h-screen max-w-[640px] flex-col px-4 py-6">
+    <h1 class="sr-only">{{ tr.play.title }}</h1>
+
     <div v-if="introCount !== null" class="flex flex-1 items-center justify-center">
-      <span class="font-display text-8xl font-extrabold text-primary" aria-live="polite">{{ introCount }}</span>
+      <span class="font-display text-8xl font-extrabold text-primary-ink" aria-live="polite">{{ introCount }}</span>
     </div>
 
     <div
       v-else-if="quiz.phase === 'error'"
       class="flex flex-1 flex-col items-center justify-center gap-4 text-center"
     >
-      <p class="text-danger">{{ quiz.errorMessage || tr.errors.network_error }}</p>
-      <button type="button" class="rounded-surface bg-primary px-4 py-2 font-semibold text-white" @click="goHome">
+      <p class="text-danger-ink">{{ quiz.errorMessage || tr.errors.network_error }}</p>
+      <button
+        type="button"
+        class="rounded-surface bg-primary-ink px-4 py-2 font-semibold text-white transition motion-reduce:transition-none"
+        @click="goHome"
+      >
         Ana sayfaya dön
       </button>
     </div>

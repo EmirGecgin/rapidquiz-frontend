@@ -68,8 +68,8 @@ watch(period, load)
         type="button"
         role="tab"
         :aria-selected="period === p"
-        class="rounded-surface px-4 py-2 text-sm font-semibold transition"
-        :class="period === p ? 'bg-primary text-white' : 'bg-surface text-text-muted shadow-sm'"
+        class="rounded-surface px-4 py-2 text-sm font-semibold transition motion-reduce:transition-none"
+        :class="period === p ? 'bg-primary-ink text-white' : 'bg-surface text-text-muted shadow-sm'"
         @click="period = p"
       >
         {{ tr.leaderboard.tabs[p] }}
@@ -79,8 +79,12 @@ watch(period, load)
     <p v-if="status === 'loading'" class="text-center text-text-muted">{{ tr.common.loading }}</p>
 
     <div v-else-if="status === 'error'" class="flex flex-col items-center gap-3 text-center">
-      <p class="text-danger">{{ errorMessage }}</p>
-      <button type="button" class="rounded-surface bg-primary px-4 py-2 font-semibold text-white" @click="load">
+      <p class="text-danger-ink">{{ errorMessage }}</p>
+      <button
+        type="button"
+        class="rounded-surface bg-primary-ink px-4 py-2 font-semibold text-white transition motion-reduce:transition-none"
+        @click="load"
+      >
         {{ tr.common.retry }}
       </button>
     </div>
@@ -92,7 +96,7 @@ watch(period, load)
         v-for="entry in entries"
         :key="entry.rank"
         class="flex items-center gap-3 rounded-surface bg-surface p-3 shadow-sm"
-        :class="entry.rank === highlightRank ? 'ring-2 ring-primary' : ''"
+        :class="entry.rank === highlightRank ? 'ring-2 ring-primary-ink' : ''"
       >
         <span class="w-8 shrink-0 text-center font-display text-lg font-bold text-text">
           {{ MEDALS[entry.rank] ?? entry.rank }}
@@ -101,7 +105,7 @@ watch(period, load)
         <span class="text-right text-sm text-text-muted">
           {{ entry.correct_count }} {{ tr.leaderboard.correctLabel }}
         </span>
-        <span class="font-display font-bold text-primary">{{ entry.score }}</span>
+        <span class="font-display font-bold text-primary-ink">{{ entry.score }}</span>
       </li>
     </ul>
   </main>

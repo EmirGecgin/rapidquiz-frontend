@@ -28,7 +28,7 @@ onMounted(loadCategories)
 <template>
   <main class="mx-auto flex min-h-screen max-w-[640px] flex-col gap-6 px-4 py-10">
     <header class="text-center">
-      <h1 class="font-display text-4xl font-extrabold text-primary">{{ tr.home.title }}</h1>
+      <h1 class="font-display text-4xl font-extrabold text-primary-ink">{{ tr.home.title }}</h1>
       <p class="mt-2 text-text-muted">{{ tr.home.subtitle }}</p>
     </header>
 
@@ -47,10 +47,10 @@ onMounted(loadCategories)
       <p v-if="status === 'loading'" class="text-center text-text-muted">{{ tr.home.loadingCategories }}</p>
 
       <div v-else-if="status === 'error'" class="flex flex-col items-center gap-3 text-center">
-        <p class="text-danger">{{ errorMessage || tr.home.categoriesError }}</p>
+        <p class="text-danger-ink">{{ errorMessage || tr.home.categoriesError }}</p>
         <button
           type="button"
-          class="rounded-surface bg-primary px-4 py-2 font-semibold text-white"
+          class="rounded-surface bg-primary-ink px-4 py-2 font-semibold text-white transition motion-reduce:transition-none"
           @click="loadCategories"
         >
           {{ tr.common.retry }}

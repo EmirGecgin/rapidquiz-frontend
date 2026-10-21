@@ -10,7 +10,7 @@ defineProps<{ category: Category }>()
 <template>
   <RouterLink
     :to="{ name: 'play', params: { slug: category.slug } }"
-    class="flex items-center gap-4 rounded-surface bg-surface p-4 shadow-sm transition hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+    class="flex items-center gap-4 rounded-surface bg-surface p-4 shadow-sm transition hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
     :style="{ outlineColor: category.color }"
   >
     <span

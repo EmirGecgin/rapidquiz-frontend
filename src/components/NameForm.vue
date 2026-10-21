@@ -18,10 +18,10 @@ const emit = defineEmits<{ 'update:modelValue': [string]; submit: [] }>()
       class="min-h-14 rounded-surface border-2 border-transparent bg-surface px-4 text-base text-text shadow-sm focus:border-primary focus:outline-none"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />
-    <p v-if="errorMessage" role="alert" class="text-sm text-danger">{{ errorMessage }}</p>
+    <p v-if="errorMessage" role="alert" class="text-sm text-danger-ink">{{ errorMessage }}</p>
     <button
       type="submit"
-      class="min-h-14 rounded-surface bg-primary font-semibold text-white transition disabled:opacity-60"
+      class="min-h-14 rounded-surface bg-primary-ink font-semibold text-white transition motion-reduce:transition-none disabled:opacity-60"
       :disabled="submitting"
     >
       {{ submitting ? tr.result.submitting : tr.result.submit }}

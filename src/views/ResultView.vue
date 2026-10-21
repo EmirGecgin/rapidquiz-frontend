@@ -49,7 +49,7 @@ function playAgain() {
 
     <div class="flex gap-10 text-center">
       <div>
-        <p class="font-display text-4xl font-extrabold text-primary">{{ finalScore }}</p>
+        <p class="font-display text-4xl font-extrabold text-primary-ink">{{ finalScore }}</p>
         <p class="text-sm text-text-muted">{{ tr.result.scoreLabel }}</p>
       </div>
       <div>
@@ -66,7 +66,11 @@ function playAgain() {
       @submit="submit"
     />
 
-    <button type="button" class="text-sm font-semibold text-primary underline-offset-2 hover:underline" @click="playAgain">
+    <button
+      type="button"
+      class="text-sm font-semibold text-primary-ink underline-offset-2 hover:underline"
+      @click="playAgain"
+    >
       {{ tr.result.playAgain }}
     </button>
   </main>

@@ -31,7 +31,7 @@ const variantClass = computed(() => {
 <template>
   <button
     type="button"
-    class="min-h-14 rounded-surface border-2 px-4 py-3 text-left text-base font-semibold text-text transition disabled:cursor-not-allowed disabled:opacity-80"
+    class="min-h-14 rounded-surface border-2 px-4 py-3 text-left text-base font-semibold text-text transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-80"
     :class="variantClass"
     :disabled="disabled"
     :aria-pressed="state !== 'idle'"
