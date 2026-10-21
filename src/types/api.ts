@@ -40,6 +40,7 @@ export interface Choice {
 export type NextQuestionResponse =
   | { done: true }
   | {
+      done?: false
       index: number
       question_id: number
       text: string
