@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { fetchNextQuestion, startSession, submitAnswer as submitAnswerRequest } from '@/api/game'
+import {
+  fetchNextQuestion,
+  finishSession,
+  startSession,
+  submitAnswer as submitAnswerRequest,
+} from '@/api/game'
 import { ApiError } from '@/api/client'
 import { useSessionStore } from '@/stores/session'
 import type { Choice, Platform } from '@/types/api'
@@ -24,6 +29,7 @@ export const useQuizStore = defineStore('quiz', () => {
   const correctChoiceId = ref<number | null>(null)
   const isCorrect = ref(false)
   const errorMessage = ref('')
+  const finishErrorMessage = ref('')
 
   let feedbackTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -99,6 +105,23 @@ export const useQuizStore = defineStore('quiz', () => {
     }
   }
 
+  async function finish(playerName: string): Promise<{ rank: number } | null> {
+    const sessionStore = useSessionStore()
+    if (!sessionStore.sessionId) return null
+
+    finishErrorMessage.value = ''
+    try {
+      const data = await finishSession(sessionStore.sessionId, playerName)
+      sessionStore.rememberPlayerName(playerName.trim())
+      const rank = data.rank
+      reset()
+      return { rank }
+    } catch (error) {
+      finishErrorMessage.value = error instanceof ApiError ? error.message : 'Beklenmeyen bir hata oluştu.'
+      return null
+    }
+  }
+
   function setError(error: unknown) {
     errorMessage.value = error instanceof ApiError ? error.message : 'Beklenmeyen bir hata oluştu.'
     phase.value = 'error'
@@ -133,9 +156,11 @@ export const useQuizStore = defineStore('quiz', () => {
     correctChoiceId,
     isCorrect,
     errorMessage,
+    finishErrorMessage,
     start,
     loadNext,
     submitAnswer,
+    finish,
     reset,
   }
 })

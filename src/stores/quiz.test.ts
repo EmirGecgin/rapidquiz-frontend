@@ -1,16 +1,18 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { AnswerResponse, NextQuestionResponse, StartSessionResponse } from '@/types/api'
+import type { AnswerResponse, FinishResponse, NextQuestionResponse, StartSessionResponse } from '@/types/api'
 
 const startSession = vi.fn<() => Promise<StartSessionResponse>>()
 const fetchNextQuestion = vi.fn<() => Promise<NextQuestionResponse>>()
 const submitAnswer = vi.fn<() => Promise<AnswerResponse>>()
+const finishSession = vi.fn<() => Promise<FinishResponse>>()
 
 vi.mock('@/api/game', () => ({
   startSession: (...args: unknown[]) => startSession(...(args as [])),
   fetchNextQuestion: (...args: unknown[]) => fetchNextQuestion(...(args as [])),
   submitAnswer: (...args: unknown[]) => submitAnswer(...(args as [])),
+  finishSession: (...args: unknown[]) => finishSession(...(args as [])),
 }))
 
 import { useQuizStore } from './quiz'
@@ -33,6 +35,7 @@ describe('useQuizStore', () => {
     startSession.mockReset()
     fetchNextQuestion.mockReset()
     submitAnswer.mockReset()
+    finishSession.mockReset()
   })
 
   afterEach(() => {
@@ -126,5 +129,34 @@ describe('useQuizStore', () => {
 
     expect(quiz.phase).toBe('error')
     expect(quiz.errorMessage).toBe('Oturumun süresi doldu.')
+  })
+
+  it('finish() submits the name, remembers it, and resets session state on success', async () => {
+    const quiz = useQuizStore()
+    const sessionStore = useSessionStore()
+    sessionStore.start({ sessionId: 's1', token: 'tok', categorySlug: 'tarih' })
+
+    finishSession.mockResolvedValue({ score: 42, rank: 3, correct_count: 5 })
+
+    const result = await quiz.finish('  Ahmet  ')
+
+    expect(finishSession).toHaveBeenCalledWith('s1', '  Ahmet  ')
+    expect(result).toEqual({ rank: 3 })
+    expect(sessionStore.lastPlayerName).toBe('Ahmet')
+    expect(sessionStore.sessionId).toBeNull()
+    expect(quiz.score).toBe(0)
+  })
+
+  it('finish() returns null and sets finishErrorMessage on failure', async () => {
+    const quiz = useQuizStore()
+    useSessionStore().start({ sessionId: 's1', token: 'tok', categorySlug: 'tarih' })
+
+    const { ApiError } = await import('@/api/client')
+    finishSession.mockRejectedValue(new ApiError('invalid_name', 'Geçersiz isim.'))
+
+    const result = await quiz.finish('a')
+
+    expect(result).toBeNull()
+    expect(quiz.finishErrorMessage).toBe('Geçersiz isim.')
   })
 })

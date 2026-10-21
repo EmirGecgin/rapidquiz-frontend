@@ -3,8 +3,15 @@
 Bu dosya her fazdan sonra güncellenir. Yeni bir oturum başlarken önce bu dosyayı oku.
 
 ## Durum
-- Son tamamlanan faz: **F3 — Oyun** (2026-10-21)
-- Sıradaki faz: **F4 — Sonuç + NameForm**
+- Son tamamlanan faz: **F4 — Sonuç + NameForm** (2026-10-21)
+- Sıradaki faz: **F5 — Liderlik tablosu**
+- F4'te yapılanlar:
+  - `src/api/game.ts`: `finishSession(sessionId, playerName)`.
+  - `useQuizStore.finish(playerName)`: `/finish/` çağırır, başarıda `sessionStore.rememberPlayerName()` (localStorage) + `reset()` (session/quiz state temizlenir — bu noktadan sonra token tekrar kullanılamaz zaten), `{rank}` döner; hatada `finishErrorMessage` set edilir, state KORUNUR (kullanıcı tekrar deneyebilsin).
+  - `NameForm.vue`: `v-model` ile isim input'u, hata mesajı (`role="alert"`), gönderiliyor durumunda disabled buton.
+  - `ResultView.vue`: mount anında `quiz.score`/`quiz.correctCount`/`sessionStore.categorySlug` donduruluyor (çünkü `finish()` sonrasında `reset()` bunları siler) — skor+doğru gösterimi, `NameForm`, başarıda `/leaderboard/:slug?highlight=<rank>`'a yönlendirme, hata durumunda sayfada kal + mesaj göster, "Tekrar oyna" butonu (`/play/:slug`'a geri döner, aynı kategoriyle yeni tur).
+  - 48/48 test geçti (store `finish` başarı/hata, NameForm, ResultView — skor gösterimi/başarılı yönlendirme/hata durumu/tekrar oyna), build/typecheck temiz.
+  - Gerçek backend'e karşı tarayıcıda iki kez uçtan uca doğrulandı: tur bitti → isim gönderildi → `/finish/` 200 → `/leaderboard/:slug?highlight=N`'e yönlendirme çalıştı. Bonus doğrulama: ikinci turda isim alanı önceki "Emir" ismiyle önceden doluydu — `lastPlayerName` localStorage hatırlama özelliği canlı doğrulandı.
 - **Önemli**: F3 sırasında backend'de gerçek bir bug bulundu ve düzeltildi — `X-Session-Token` header'ı CORS preflight'ta izinli değildi (Django test client bunu simüle etmediği için backend testlerinde yakalanmamıştı, yalnızca gerçek tarayıcı testinde ortaya çıktı). `rapidquiz-backend`'de `CORS_ALLOW_HEADERS`'a eklendi (commit d13b877). **Bu, backend ile ilgili her entegrasyonun mutlaka gerçek tarayıcıda test edilmesi gerektiğinin kanıtı — birim testleri yetmiyor.**
 - F3'te yapılanlar:
   - `src/composables/useCountdown.ts`: rAF tabanlı geri sayım. Her tick'te `performance.now() - startedAt` ile gerçek geçen süre hesaplanıyor (biriktirmeli sayaç değil) — bu sayede **sekme arka plana alınıp rAF duraklasa bile**, tekrar öne geldiğinde gerçek süre doğru yakalanıyor ("sekme değişince sayaç durmaz" kuralı). Sunucu zaten `shown_at`/`answered_at` ile kendi hesabını yapıyor, istemci sayacı yalnızca görsel.

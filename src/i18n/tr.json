@@ -36,7 +36,14 @@
     "title": "Oyun"
   },
   "result": {
-    "title": "Sonuç"
+    "title": "Sonuç",
+    "scoreLabel": "Puan",
+    "correctLabel": "Doğru",
+    "nameLabel": "İsmin",
+    "namePlaceholder": "Adını yaz",
+    "submit": "Liderlik tablosuna gir",
+    "submitting": "Gönderiliyor...",
+    "playAgain": "Tekrar oyna"
   },
   "leaderboard": {
     "title": "Liderlik Tablosu",

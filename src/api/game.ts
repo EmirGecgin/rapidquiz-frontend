@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { AnswerResponse, NextQuestionResponse, Platform, StartSessionResponse } from '@/types/api'
+import type { AnswerResponse, FinishResponse, NextQuestionResponse, Platform, StartSessionResponse } from '@/types/api'
 
 export async function startSession(
   categorySlug: string,
@@ -25,6 +25,13 @@ export async function submitAnswer(
   const response = await apiClient.post<AnswerResponse>(`/sessions/${sessionId}/answer/`, {
     question_id: questionId,
     choice_id: choiceId,
+  })
+  return response.data
+}
+
+export async function finishSession(sessionId: string, playerName: string): Promise<FinishResponse> {
+  const response = await apiClient.post<FinishResponse>(`/sessions/${sessionId}/finish/`, {
+    player_name: playerName,
   })
   return response.data
 }
