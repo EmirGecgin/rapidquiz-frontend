@@ -7,7 +7,7 @@ defineProps<{ total: number; completed: number }>()
     <span
       v-for="i in total"
       :key="i"
-      class="h-2 w-2 rounded-full"
+      class="h-2 w-2 rounded-full transition-colors duration-300 motion-reduce:transition-none"
       :class="i - 1 < completed ? 'bg-primary' : i - 1 === completed ? 'bg-primary/50' : 'bg-text-muted/30'"
     />
   </div>

@@ -29,7 +29,10 @@ const category: Category = { name: 'Tarih', slug: 'tarih', icon: 'landmark', col
 async function mountLeaderboard(query: Record<string, string> = {}) {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: [{ path: '/leaderboard/:slug', name: 'leaderboard', component: LeaderboardView, props: true }],
+    routes: [
+      { path: '/', name: 'home', component: { template: '<div />' } },
+      { path: '/leaderboard/:slug', name: 'leaderboard', component: LeaderboardView, props: true },
+    ],
   })
   await router.push({ name: 'leaderboard', params: { slug: 'tarih' }, query })
 

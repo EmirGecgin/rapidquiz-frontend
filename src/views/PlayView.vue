@@ -70,7 +70,9 @@ watch(
       countdown.stop()
     }
     if (phase === 'done') {
-      router.push({ name: 'result' })
+      // replace: biten tur geçmişte kalmamalı — geri tuşu yarım kalmış bir
+      // soruya değil, doğrudan ana sayfaya dönmeli.
+      router.replace({ name: 'result' })
     }
   },
 )
@@ -126,24 +128,28 @@ const feedbackAnnouncement = computed(() => {
     <template v-else-if="quiz.phase === 'question' || quiz.phase === 'feedback'">
       <div class="flex items-center justify-between">
         <ProgressDots :total="quiz.totalQuestions" :completed="quiz.index" />
-        <span class="font-display text-lg font-bold text-text">{{ quiz.score }}</span>
+        <span :key="quiz.score" class="animate-pop font-display text-lg font-bold text-primary-ink">{{
+          quiz.score
+        }}</span>
       </div>
 
       <div class="my-6 flex justify-center">
         <CountdownRing :remaining-ms="countdown.remainingMs.value" :total-ms="quiz.timeLimitMs" />
       </div>
 
-      <QuestionCard :text="quiz.questionText" />
+      <QuestionCard :key="quiz.questionId ?? undefined" :text="quiz.questionText" class="animate-fade-up" />
 
       <p aria-live="polite" class="sr-only">{{ feedbackAnnouncement }}</p>
 
       <div class="mt-auto grid grid-cols-1 gap-3 pb-4">
         <ChoiceButton
-          v-for="choice in quiz.choices"
+          v-for="(choice, i) in quiz.choices"
           :key="choice.id"
           :text="choice.text"
           :state="choiceState(choice.id)"
           :disabled="quiz.phase !== 'question'"
+          class="animate-fade-up"
+          :style="{ animationDelay: `${i * 60}ms` }"
           @click="selectChoice(choice.id)"
         />
       </div>

@@ -17,9 +17,9 @@ defineEmits<{ click: [] }>()
 const variantClass = computed(() => {
   switch (props.state) {
     case 'correct':
-      return 'border-success bg-success/20'
+      return 'border-success bg-success/20 animate-bounce-in'
     case 'incorrect':
-      return 'border-danger bg-danger/20'
+      return 'border-danger bg-danger/20 animate-shake'
     case 'selected':
       return 'border-primary bg-primary/10'
     default:
@@ -31,7 +31,7 @@ const variantClass = computed(() => {
 <template>
   <button
     type="button"
-    class="min-h-14 rounded-surface border-2 px-4 py-3 text-left text-base font-semibold text-text transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-80"
+    class="min-h-14 rounded-surface border-2 px-4 py-3 text-left text-base font-semibold text-text transition motion-reduce:transition-none active:scale-[0.97] motion-reduce:active:scale-100 disabled:cursor-not-allowed disabled:opacity-80"
     :class="variantClass"
     :disabled="disabled"
     :aria-pressed="state !== 'idle'"

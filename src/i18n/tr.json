@@ -5,7 +5,8 @@
   "common": {
     "loading": "Yükleniyor...",
     "retry": "Tekrar dene",
-    "comingSoon": "Yakında"
+    "comingSoon": "Yakında",
+    "backToHome": "Ana Sayfa"
   },
   "errors": {
     "invalid_token": "Oturum doğrulanamadı.",

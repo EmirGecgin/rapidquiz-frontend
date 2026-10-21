@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 import { fetchCategories } from '@/api/catalog'
 import { ApiError } from '@/api/client'
@@ -56,7 +56,13 @@ watch(period, load)
 
 <template>
   <main class="mx-auto flex min-h-screen max-w-[640px] flex-col gap-6 px-4 py-10">
-    <header class="text-center">
+    <header class="relative text-center">
+      <RouterLink
+        :to="{ name: 'home' }"
+        class="absolute left-0 top-1 text-sm font-semibold text-primary-ink transition hover:underline motion-reduce:transition-none"
+      >
+        ← {{ tr.common.backToHome }}
+      </RouterLink>
       <h1 class="font-display text-2xl font-bold text-text">{{ tr.leaderboard.title }}</h1>
       <p class="text-text-muted">{{ category?.name ?? slug }}</p>
     </header>
@@ -93,12 +99,16 @@ watch(period, load)
 
     <ul v-else class="flex flex-col gap-2">
       <li
-        v-for="entry in entries"
+        v-for="(entry, i) in entries"
         :key="entry.rank"
-        class="flex items-center gap-3 rounded-surface bg-surface p-3 shadow-sm"
-        :class="entry.rank === highlightRank ? 'ring-2 ring-primary-ink' : ''"
+        class="animate-fade-up flex items-center gap-3 rounded-surface bg-surface p-3 shadow-sm"
+        :class="entry.rank === highlightRank ? 'animate-ring-pulse ring-2 ring-primary-ink' : ''"
+        :style="{ animationDelay: `${i * 50}ms` }"
       >
-        <span class="w-8 shrink-0 text-center font-display text-lg font-bold text-text">
+        <span
+          class="w-8 shrink-0 text-center font-display text-lg font-bold text-text"
+          :class="entry.rank <= 3 ? 'animate-pop' : ''"
+        >
           {{ MEDALS[entry.rank] ?? entry.rank }}
         </span>
         <span class="flex-1 truncate font-semibold text-text">{{ entry.player_name }}</span>
