@@ -3,8 +3,16 @@
 Bu dosya her fazdan sonra güncellenir. Yeni bir oturum başlarken önce bu dosyayı oku.
 
 ## Durum
-- Son tamamlanan faz: **(henüz yok)**
-- Sıradaki faz: **F1 — İskelet** (F3 için backend B3 hazır olmalı)
+- Son tamamlanan faz: **F1 — İskelet** (2026-10-21)
+- Sıradaki faz: **F2 — Ana sayfa + CategoryCard**
+- F1'de yapılanlar: `npm install` ile gerçek paket kurulumu — **Tailwind CSS 4** (`@tailwindcss/vite` eklentisi, `tailwind.config.js` yok, token'lar `src/assets/main.css`'te `@theme` ile tanımlı), Vue 3.5/Pinia 4/Vue Router 5/Axios 1.20 (güncel major'lar — proje Ekim 2026'da kuruldu). **Önemli uyumluluk notu**: `typescript@7` (native "tsgo" portu) `vue-tsc@3.3.13` ile paket exports uyuşmazlığı veriyor (`ERR_PACKAGE_PATH_NOT_EXPORTED`) — `typescript` bilerek `6.0.3`'e sabitlendi, ileride vue-tsc TS7 desteği netleşmeden yükseltilmemeli. `vite.config.ts`'te tip birleşimi için `vitest/config`'ten `defineConfig` import ediliyor (düz `vite`'tan değil, yoksa `test` alanı tip hatası veriyor). `tsconfig.app.json`/`tsconfig.node.json`'da `noEmit:true` + `baseUrl` kaldırıldı (TS 6'da deprecated, yalnızca `paths` yeterli) — yoksa `vue-tsc -b` `vite.config.js/.d.ts` gibi derlenmiş dosyaları repoya sızdırıyordu.
+  - `src/api/client.ts`: Axios instance, `attachSessionToken`/`mapError` ayrı fonksiyonlar olarak export edildi (test edilebilirlik için) — `X-Session-Token` header'ı Pinia session store'dan otomatik ekleniyor, backend `{"error":{"code","message"}}` zarfı `ApiError`'a eşleniyor (bilinmeyen/network hatası → `network_error`).
+  - `src/stores/session.ts`: Pinia setup store — `sessionId/token/categorySlug` yalnızca bellekte; `lastPlayerName` `localStorage`'da try/catch ile (gizli sekmede sessizce no-op).
+  - `src/router/index.ts`: `createWebHistory`, 4 route (`/`, `/play/:slug`, `/result`, `/leaderboard/:slug`) → şimdilik boş view'lar (yalnızca başlık + "Yakında").
+  - `src/i18n/tr.json`: tüm metinler + B1'deki 9 hata koduna karşılık gelen TR mesajlar (`errors.*`).
+  - `src/types/api.ts`: backend yanıtlarıyla birebir TS tipleri (`NextQuestionResponse` union — `{done:true}` veya tam soru objesi).
+  - 11/11 Vitest testi geçti (router→view eşlemesi, axios interceptor'ları, session store), `npm run typecheck` ve `npm run build` temiz, dev server'da tarayıcıda 4 route da görsel olarak doğrulandı (Nunito başlıklar, `#6BA6A0` primary renk, soft arka plan uygulanmış).
+  - `.do/app.yaml` backend reposunda zaten bu repoyu (`rapidquiz-frontend`) `static_sites.web` olarak referans alıyor (`npm ci && npm run build`, `output_dir: dist`, `VITE_API_BASE_URL` BUILD_TIME).
 - Not: Backend ayrı repoda (`rapidquiz-backend`), API tabanı `VITE_API_BASE_URL` ile verilir.
 
 ## Kurallar (her fazda geçerli)

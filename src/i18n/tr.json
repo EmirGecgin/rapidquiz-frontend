@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "HızlıQuiz"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "retry": "Tekrar dene",
+    "comingSoon": "Yakında"
+  },
+  "errors": {
+    "invalid_token": "Oturum doğrulanamadı.",
+    "session_expired": "Oturumun süresi doldu.",
+    "session_finished": "Bu tur zaten bitti.",
+    "question_mismatch": "Bu soru artık aktif değil.",
+    "already_answered": "Bu soru zaten cevaplandı.",
+    "invalid_name": "Lütfen geçerli bir isim gir (2-20 karakter).",
+    "rate_limited": "Çok hızlı gidiyorsun, birkaç saniye bekle.",
+    "not_found": "Bulunamadı.",
+    "validation_error": "Gönderilen bilgi geçersiz.",
+    "network_error": "Sunucuya bağlanılamadı. İnternetini kontrol et."
+  },
+  "home": {
+    "title": "HızlıQuiz",
+    "subtitle": "5 kategori, 10 soru, soru başına 5 saniye. Hazır mısın?"
+  },
+  "play": {
+    "title": "Oyun"
+  },
+  "result": {
+    "title": "Sonuç"
+  },
+  "leaderboard": {
+    "title": "Liderlik Tablosu",
+    "tabs": {
+      "day": "Bugün",
+      "week": "Hafta",
+      "all": "Tümü"
+    }
+  }
+}
