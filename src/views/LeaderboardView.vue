@@ -1,12 +1,108 @@
 <script setup lang="ts">
-import tr from '@/i18n'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-defineProps<{ slug: string }>()
+import { fetchCategories } from '@/api/catalog'
+import { ApiError } from '@/api/client'
+import { fetchLeaderboard } from '@/api/leaderboard'
+import tr from '@/i18n'
+import type { Category, LeaderboardEntry, LeaderboardPeriod } from '@/types/api'
+
+const props = defineProps<{ slug: string }>()
+const route = useRoute()
+
+const PERIODS: LeaderboardPeriod[] = ['day', 'week', 'all']
+const MEDALS: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
+
+const period = ref<LeaderboardPeriod>('all')
+const entries = ref<LeaderboardEntry[]>([])
+const status = ref<'loading' | 'error' | 'ready'>('loading')
+const errorMessage = ref('')
+const category = ref<Category | null>(null)
+
+const highlightRank = computed(() => {
+  const raw = route.query.highlight
+  const value = Array.isArray(raw) ? raw[0] : raw
+  return value ? Number(value) : null
+})
+
+async function load() {
+  status.value = 'loading'
+  try {
+    entries.value = await fetchLeaderboard(props.slug, period.value)
+    status.value = 'ready'
+  } catch (error) {
+    errorMessage.value = error instanceof ApiError ? tr.errors[error.code] : tr.leaderboard.loadError
+    status.value = 'error'
+  }
+}
+
+async function loadCategory() {
+  try {
+    const categories = await fetchCategories()
+    category.value = categories.find((c) => c.slug === props.slug) ?? null
+  } catch {
+    category.value = null
+  }
+}
+
+onMounted(() => {
+  loadCategory()
+  load()
+})
+
+watch(period, load)
 </script>
 
 <template>
-  <main class="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-4 px-4 text-center">
-    <h1 class="font-display text-2xl font-bold text-text">{{ tr.leaderboard.title }} — {{ slug }}</h1>
-    <p class="text-text-muted">{{ tr.common.comingSoon }}</p>
+  <main class="mx-auto flex min-h-screen max-w-[640px] flex-col gap-6 px-4 py-10">
+    <header class="text-center">
+      <h1 class="font-display text-2xl font-bold text-text">{{ tr.leaderboard.title }}</h1>
+      <p class="text-text-muted">{{ category?.name ?? slug }}</p>
+    </header>
+
+    <div class="flex justify-center gap-2" role="tablist">
+      <button
+        v-for="p in PERIODS"
+        :key="p"
+        type="button"
+        role="tab"
+        :aria-selected="period === p"
+        class="rounded-surface px-4 py-2 text-sm font-semibold transition"
+        :class="period === p ? 'bg-primary text-white' : 'bg-surface text-text-muted shadow-sm'"
+        @click="period = p"
+      >
+        {{ tr.leaderboard.tabs[p] }}
+      </button>
+    </div>
+
+    <p v-if="status === 'loading'" class="text-center text-text-muted">{{ tr.common.loading }}</p>
+
+    <div v-else-if="status === 'error'" class="flex flex-col items-center gap-3 text-center">
+      <p class="text-danger">{{ errorMessage }}</p>
+      <button type="button" class="rounded-surface bg-primary px-4 py-2 font-semibold text-white" @click="load">
+        {{ tr.common.retry }}
+      </button>
+    </div>
+
+    <p v-else-if="entries.length === 0" class="text-center text-text-muted">{{ tr.leaderboard.empty }}</p>
+
+    <ul v-else class="flex flex-col gap-2">
+      <li
+        v-for="entry in entries"
+        :key="entry.rank"
+        class="flex items-center gap-3 rounded-surface bg-surface p-3 shadow-sm"
+        :class="entry.rank === highlightRank ? 'ring-2 ring-primary' : ''"
+      >
+        <span class="w-8 shrink-0 text-center font-display text-lg font-bold text-text">
+          {{ MEDALS[entry.rank] ?? entry.rank }}
+        </span>
+        <span class="flex-1 truncate font-semibold text-text">{{ entry.player_name }}</span>
+        <span class="text-right text-sm text-text-muted">
+          {{ entry.correct_count }} {{ tr.leaderboard.correctLabel }}
+        </span>
+        <span class="font-display font-bold text-primary">{{ entry.score }}</span>
+      </li>
+    </ul>
   </main>
 </template>

@@ -51,6 +51,10 @@
       "day": "Bugün",
       "week": "Hafta",
       "all": "Tümü"
-    }
+    },
+    "empty": "Henüz kimse yok. İlk sen ol!",
+    "loadError": "Liderlik tablosu yüklenemedi.",
+    "scoreLabel": "puan",
+    "correctLabel": "doğru"
   }
 }

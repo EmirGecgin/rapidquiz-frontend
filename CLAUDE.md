@@ -3,8 +3,13 @@
 Bu dosya her fazdan sonra güncellenir. Yeni bir oturum başlarken önce bu dosyayı oku.
 
 ## Durum
-- Son tamamlanan faz: **F4 — Sonuç + NameForm** (2026-10-21)
-- Sıradaki faz: **F5 — Liderlik tablosu**
+- Son tamamlanan faz: **F5 — Liderlik tablosu** (2026-10-21)
+- Sıradaki faz: **F6 — Erişilebilirlik, 360px, meta/favicon, Playwright E2E, README**
+- F5'te yapılanlar:
+  - `src/api/leaderboard.ts`: `fetchLeaderboard(slug, period)`.
+  - `LeaderboardView.vue`: kategori adını göstermek için `fetchCategories()`'i tekrar kullanıp slug'a göre eşleştiriyor (ekstra model yerine mevcut endpoint'i yeniden kullanmak daha az karmaşık); `period` sekmeleri (`role="tablist"`/`role="tab"`/`aria-selected`), `?highlight=<rank>` query param'ı `route.query`'den okunup eşleşen satıra `ring-2 ring-primary` uygulanıyor, ilk 3 sıraya 🥇🥈🥉 madalyası (`MEDALS` map, 4.+ sıra düz numara), yükleniyor/hata (tekrar dene)/boş liste durumları.
+  - 54/54 test geçti (kategori adı+madalyalar, varsayılan `period=all` ile fetch, sekme değişince yeniden fetch, highlight vurgusu, boş durum, hata+tekrar dene), build/typecheck temiz.
+  - Gerçek backend'e karşı tarayıcıda doğrulandı: kategori adı ("Tarih") doğru çekiliyor, sekme geçişi çalışıyor, `?highlight=1` ile satırda gerçekten `ring-2 ring-primary` sınıfının uygulandığı DOM'dan teyit edildi (F4'te oluşturulan "Emir" kaydı 🥇 ile görünüyor).
 - F4'te yapılanlar:
   - `src/api/game.ts`: `finishSession(sessionId, playerName)`.
   - `useQuizStore.finish(playerName)`: `/finish/` çağırır, başarıda `sessionStore.rememberPlayerName()` (localStorage) + `reset()` (session/quiz state temizlenir — bu noktadan sonra token tekrar kullanılamaz zaten), `{rank}` döner; hatada `finishErrorMessage` set edilir, state KORUNUR (kullanıcı tekrar deneyebilsin).
